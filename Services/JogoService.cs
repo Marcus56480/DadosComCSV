@@ -14,7 +14,9 @@ namespace DadosComCSV.Services
 
         public List<Jogo> Listar()
         {
-            return _repository.Listar();
+            return _repository!.Listar();
         }
+
+        public void Cadastrar(Jogo jogo) => _repository?.Adicionar(jogo);
     } 
 }
