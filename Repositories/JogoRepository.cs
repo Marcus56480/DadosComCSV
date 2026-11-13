@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices.Marshalling;
 using System.Text;
+using System.Text.Unicode;
 using DadosComCSV.Models;
 
 namespace DadosComCSV.Repositories
@@ -58,7 +59,36 @@ namespace DadosComCSV.Repositories
             }
 
             return jogos;
+        }
 
+        public void Adicionar(Jogo jogo)
+        {
+            var jogos = Listar();
+
+            jogo.Id = jogos.Count == 0 ? 1 : jogos.Max(j => j.Id) + 1;
+            jogos.Add(jogo);
+            SalvarTodos(jogos);
+
+        }
+
+        private void SalvarTodos(List<Jogo> jogos)
+        {
+            var linhas = new List<String>
+            {
+            "Id;Nome;Desenvolvedora;Genero;AnoLancamento;Preco"
+            };
+
+            linhas.AddRange(jogos.Select(j => string.Join(";",
+            j.Id.ToString(),
+            j.Nome,
+            j.Desenvolvedora,
+            j.Genero,
+            j.AnoLancamento.ToString(),
+            j.Preco.ToString()
+                ))
+            );
+
+            File.WriteAllLines(_caminhoArquivo, linhas, new UTF8Encoding(false));
         }
     }
 }
